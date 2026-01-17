@@ -1,0 +1,47 @@
+name: Update Hitokoto Sentences
+
+on:
+  schedule:
+    # 每月1日 00:00 UTC 执行
+    - cron: '0 0 1 * *'
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Download sentences from hitokoto-osc
+        run: |
+          # 下载所有句子文件
+          cd sentences
+          for type in a b c d e f g h i j k l; do
+            echo "下载类型 ${type} 的句子..."
+            curl -L -o ${type}.json \
+              "https://raw.githubusercontent.com/hitokoto-osc/sentences-bundle/master/sentences/${type}.json"
+          done
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet sentences/; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add sentences/
+          git commit -m "chore: 更新一言句子库 $(date +'%Y-%m-%d')"
+          git push
+      
+      - name: No changes
+        if: steps.check_changes.outputs.changed == 'false'
+        run: echo "句子库无更新"
