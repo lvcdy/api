@@ -1,14 +1,14 @@
 # 一言 API
 
-自用一言API服务,支持多平台部署（阿里云ESA + Cloudflare Pages）。
+自用一言API服务，部署于 Cloudflare Pages。
 
 ## 🚀 接口说明
 
 随机返回一句话,包含动画、文学、诗词等多种类型。
 
-**接口地址:** `https://your-domain.com/hitokoto`
+**接口地址:** `https://your-domain.pages.dev/hitokoto`
 
-> 部署到 Cloudflare Pages 支持 `curl`，阿里云 ESA 返回网页/JS。
+> 基于 Cloudflare Functions，支持 `curl` 和浏览器直接访问。
 
 ### 📋 请求参数
 
@@ -103,30 +103,28 @@ curl https://your-domain.com/hitokoto?format=text
 <div id="hitokoto">加载中...</div>
 
 <script>
-fetch('https://your-domain.pages.dev/api/hitokoto/hitokoto.html')
-  .then(response => response.text())
+fetch('https://your-domain.pages.dev/hitokoto')
+  .then(response => response.json())
   .then(data => {
-    const sentence = JSON.parse(data);
-    document.getElementById('hitokoto').textContent = sentence.hitokoto;
+    document.getElementById('hitokoto').textContent = data.hitokoto;
   });
 </script>
 ```
 
-## � 部署到 Cloudflare Pages
+## 🚀 部署到 Cloudflare Pages
 
-### 方法一: 通过 GitHub 连接
+### 方法一: 通过 GitHub 连接 (推荐)
 
 1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
 2. 进入 **Workers & Pages** → **Create application** → **Pages**
 3. 连接你的 GitHub 仓库 `lvcdy/api`
 4. 构建设置:
-   - **框架预设**: None
+   - **框架预设**: None (或直接使用默认)
    - **构建命令**: 留空
    - **构建输出目录**: `.` (当前目录)
-   - **根目录**: `/` (默认)
 5. 点击 **Save and Deploy**
 
-系统会自动读取 `esa.jsonc` 和 `build.json` 配置文件。
+> 系统会自动识别 `functions` 目录并部署 API 接口。
 
 ### 方法二: 使用 Wrangler CLI
 
@@ -141,49 +139,29 @@ wrangler login
 wrangler pages deploy . --project-name=api
 ```
 
-### 自定义域名
-
-部署完成后，可以在阿里云ESA或Cloudflare设置中添加自定义域名。
-
-## 🌐 多平台分流
-
-该项目支持同时在多个平台部署，实现分流部署的架构：
-
-```
-┌─ 阿里云 ESA (主部署)
-│  └─ esa.jsonc 配置
-│
-└─ 其他平台 (备用)
-   └─ 根据各平台要求配置
-```
-
-**优势:**
-- 高可用性 - 一个平台故障时可快速切换
-- 地理分布 - 根据用户位置自动选择最近的节点
-- 负载均衡 - 分散流量，提高整体吞吐量
-- 成本优化 - 充分利用各平台的免费额度
-
-## �🛠️ 本地开发
+## 🛠️ 本地开发
 
 ```bash
 # 克隆仓库
 git clone https://github.com/lvcdy/api.git
 cd api
 
-# 使用HTTP服务器运行
-python -m http.server 8000
+# 使用 Wrangler 本地开发
+npx wrangler pages dev .
 ```
 
-然后访问 `http://localhost:8000/api/hitokoto/hitokoto.html`
+然后访问 `http://localhost:8788/hitokoto`
 
-## � 自动更新
+## 🔄 自动更新
 
 句子库每月自动从 [hitokoto-osc/sentences-bundle](https://github.com/hitokoto-osc/sentences-bundle) 更新一次，确保内容始终保持最新。
+
 ## 📚 数据来源
 
 所有一言数据来源于 **[Hitokoto 一言](https://hitokoto.cn/)** 项目的官方句子库 [sentences-bundle](https://github.com/hitokoto-osc/sentences-bundle)。
 
 该项目是一个开源的一言数据库，包含来自动画、漫画、游戏、文学等多个领域的经典句子。感谢 Hitokoto 团队和所有贡献者！
-## �📄 License
+
+## 📄 License
 
 [LICENSE](LICENSE)
