@@ -1,23 +1,24 @@
 {
-  "version": "0.1.0",
-  "env": {
-    "production": {
-      "name": "api-production",
-      "assets": {
-        "root": ".",
-        "include": ["**"],
-        "exclude": [
-          ".git",
-          ".github",
-          ".gitignore",
-          "wrangler.toml",
-          "esa.jsonc",
-          "package.json",
-          "build.json",
-          "node_modules",
-          ".DS_Store"
-        ]
-      }
+  "name": "api",
+  "assets": {
+    "root": ".",
+    "include": ["**"],
+    "exclude": [
+      ".git",
+      ".github",
+      ".gitignore",
+      "wrangler.toml",
+      "esa.jsonc",
+      "package.json",
+      "build.json",
+      "node_modules",
+      ".DS_Store"
+    ]
+  },
+  "routes": [
+    {
+      "pattern": "/api/hitokoto",
+      "method": ["GET"]
     }
-  }
+  ]
 }
