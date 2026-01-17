@@ -1,6 +1,6 @@
 # 一言 API
 
-自用一言API服务,部署在Cloudflare Pages上。
+自用一言API服务,支持多平台部署（阿里云ESA + Cloudflare Pages）。
 
 ## 🚀 接口说明
 
@@ -12,11 +12,17 @@
 
 ### 📋 请求参数
 
-| 参数名 | 类型 | 必填 | 说明 |
-|--------|------|------|------|
-| type | string | 否 | 句子类型(a-l)或random(默认) |
-| format | string | 否 | 返回格式: json(默认)/text/js |
-| callback | string | 否 | JSONP回调函数名(format=js时有效) |
+API支持官方一言格式和简化格式两种参数风格。
+
+| 参数名 | 简化格式 | 官方格式 | 类型 | 说明 |
+|--------|---------|---------|------|------|
+| c | type | c | string | 句子类型(a-l)，可多个。不指定则随机 |
+| encode | format | encode | string | 返回格式: json(默认)/text/js/jsonp |
+| charset | - | charset | string | 字符集: utf-8(默认)/gbk |
+| callback | callback | callback | string | JSONP回调函数名 |
+| select | - | select | string | JS选择器，encode=js时有效 |
+| min_length | - | min_length | number | 返回句子最小长度 |
+| max_length | - | max_length | number | 返回句子最大长度 |
 
 ### 📝 句子类型
 
@@ -32,20 +38,32 @@
 ### 💡 使用示例
 
 ```bash
-# 获取随机一言(JSON格式)
+# 官方格式：获取随机一言(JSON格式)
 curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html
 
-# 获取动画类型
+# 官方格式：获取动画类型
+curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?c=a
+
+# 官方格式：多个类型
+curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?c=a&c=b&c=c
+
+# 官方格式：纯文本
+curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?encode=text
+
+# 官方格式：按长度范围
+curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?min_length=10&max_length=20
+
+# 官方格式：JSONP格式
+curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?encode=jsonp&callback=myCallback
+
+# 简化格式：获取动画类型
 curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?type=a
 
-# 仅返回文本
+# 简化格式：纯文本
 curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?format=text
-
-# JSONP格式
-curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?format=js&callback=myCallback
 ```
 
-### 📦 响应示例
+### 📦 返回数据
 
 ```json
 {
@@ -63,6 +81,21 @@ curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?format=js&callback
   "length": 15
 }
 ```
+
+| 字段 | 说明 |
+|------|------|
+| id | 一言标识 |
+| uuid | 一言唯一标识，可链接到 https://hitokoto.cn?uuid=[uuid] 查看 |
+| hitokoto | 一言正文(Unicode编码) |
+| type | 一言类型 |
+| from | 一言出处 |
+| from_who | 一言作者 |
+| creator | 添加者 |
+| creator_uid | 添加者用户ID |
+| reviewer | 审核员ID |
+| commit_from | 提交方式(web/api) |
+| created_at | 添加时间戳 |
+| length | 句子长度 |
 
 ### 🌐 在网页中使用
 
@@ -89,11 +122,11 @@ fetch('https://your-domain.pages.dev/api/hitokoto/hitokoto.html')
 4. 构建设置:
    - **框架预设**: None
    - **构建命令**: 留空
-   - **构建输出目录**: `.` 或 `/`
+   - **构建输出目录**: `.` (当前目录)
    - **根目录**: `/` (默认)
 5. 点击 **Save and Deploy**
 
-**重要**: 必须设置 **构建输出目录** 为 `.` 或 `/`，否则会部署失败。
+系统会自动读取 `esa.jsonc` 和 `build.json` 配置文件。
 
 ### 方法二: 使用 Wrangler CLI
 
@@ -110,7 +143,25 @@ wrangler pages deploy . --project-name=api
 
 ### 自定义域名
 
-部署完成后，可以在 Cloudflare Pages 设置中添加自定义域名。
+部署完成后，可以在阿里云ESA或Cloudflare设置中添加自定义域名。
+
+## 🌐 多平台分流
+
+该项目支持同时在多个平台部署，实现分流部署的架构：
+
+```
+┌─ 阿里云 ESA (主部署)
+│  └─ esa.jsonc 配置
+│
+└─ Cloudflare Pages (备用)
+   └─ wrangler.toml / build.json 配置
+```
+
+**优势:**
+- 高可用性 - 一个平台故障时可快速切换
+- 地理分布 - 根据用户位置自动选择最近的节点
+- 负载均衡 - 分散流量，提高整体吞吐量
+- 成本优化 - 充分利用各平台的免费额度
 
 ## �🛠️ 本地开发
 
