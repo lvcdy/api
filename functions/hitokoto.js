@@ -56,13 +56,14 @@ export async function onRequest(context) {
             });
         } else if (encode === 'js') {
             const select = params.get('select') || '.hitokoto';
-            const js = `(function(){var e=document.querySelector('${select}');if(e){e.innerText='${sentence.hitokoto.replace(/'/g, "\\'")}';}})();`;
+            const js = `(function(){var e=document.querySelector('${select}');if(e){e.innerText=${JSON.stringify(sentence.hitokoto)};}})();`;
             return new Response(js, {
                 headers: { 'Content-Type': 'application/javascript; charset=utf-8' }
             });
         } else if (encode === 'jsonp') {
-            const callback = params.get('callback') || 'hitokoto';
-            const jsonp = `${callback}(${JSON.stringify(sentence)})`;
+            const callback = params.get('callback');
+            const cbName = callback || 'hitokoto';
+            const jsonp = `${cbName}(${JSON.stringify(sentence)})`;
             return new Response(jsonp, {
                 headers: { 'Content-Type': 'application/javascript; charset=utf-8' }
             });
