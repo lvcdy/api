@@ -1,29 +1,29 @@
 {
-  "$schema": "https://json.schemastore.org/esa.schema.json",
-  "version": "0.1.0",
-  "env": {
-    "production": {
-      "assets": {
-        "include": ".",
-        "exclude": [
-          ".git",
-          ".github",
-          ".gitignore",
-          "wrangler.toml",
-          "esa.jsonc",
-          "package.json",
-          "build.json",
-          "node_modules",
-          ".DS_Store"
-        ]
-      },
-      "vars": {
-        "API_SOURCE": "aliyun-esa"
-      }
+    "$schema": "https://json.schemastore.org/esa.schema.json",
+    "version": "0.1.0",
+    "env": {
+        "production": {
+            "assets": {
+                "include": ".",
+                "exclude": [
+                    ".git",
+                    ".github",
+                    ".gitignore",
+                    "wrangler.toml",
+                    "esa.jsonc",
+                    "package.json",
+                    "build.json",
+                    "node_modules",
+                    ".DS_Store"
+                ]
+            },
+            "vars": {
+                "API_SOURCE": "aliyun-esa"
+            }
+        }
+    },
+    "build": {
+        "command": "",
+        "cwd": "."
     }
-  },
-  "build": {
-    "command": "",
-    "cwd": "."
-  }
 }
