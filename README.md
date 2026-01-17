@@ -6,23 +6,23 @@
 
 随机返回一句话,包含动画、文学、诗词等多种类型。
 
-**接口地址:** `https://your-domain.pages.dev/api/hitokoto/hitokoto.html`
+**接口地址:** `https://your-domain.com/hitokoto`
 
-> 部署到Cloudflare Pages后，将域名替换为你的实际域名
+> 部署到 Cloudflare Pages 支持 `curl`，阿里云 ESA 返回网页/JS。
 
 ### 📋 请求参数
 
-API支持官方一言格式和简化格式两种参数风格。
+API支持官方一言格式参数。
 
-| 参数名 | 简化格式 | 官方格式 | 类型 | 说明 |
-|--------|---------|---------|------|------|
-| c | type | c | string | 句子类型(a-l)，可多个。不指定则随机 |
-| encode | format | encode | string | 返回格式: json(默认)/text/js/jsonp |
-| charset | - | charset | string | 字符集: utf-8(默认)/gbk |
-| callback | callback | callback | string | JSONP回调函数名 |
-| select | - | select | string | JS选择器，encode=js时有效 |
-| min_length | - | min_length | number | 返回句子最小长度 |
-| max_length | - | max_length | number | 返回句子最大长度 |
+| 参数 | 值 | 可选 | 说明 |
+|------|----|------|------|
+| c | 见后表 | 是 | 句子类型 (a-l) |
+| encode | text, json, js, jsonp | 是 | 返回编码 (默认: json) |
+| charset | utf-8, gbk | 是 | 字符集 (默认: utf-8) |
+| callback | 如: hitokoto | 是 | 调用的异步函数 (JSONP用) |
+| select | 默认: .hitokoto | 是 | CSS选择器 (encode=js时使用) |
+| min_length | 默认: 0 | 是 | 句子最小长度 (包含) |
+| max_length | 默认: 30 | 是 | 句子最大长度 (包含) |
 
 ### 📝 句子类型
 
@@ -39,28 +39,28 @@ API支持官方一言格式和简化格式两种参数风格。
 
 ```bash
 # 官方格式：获取随机一言(JSON格式)
-curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html
+curl https://your-domain.com/hitokoto
 
 # 官方格式：获取动画类型
-curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?c=a
+curl https://your-domain.com/hitokoto?c=a
 
 # 官方格式：多个类型
-curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?c=a&c=b&c=c
+curl https://your-domain.com/hitokoto?c=a&c=b&c=c
 
 # 官方格式：纯文本
-curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?encode=text
+curl https://your-domain.com/hitokoto?encode=text
 
 # 官方格式：按长度范围
-curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?min_length=10&max_length=20
+curl https://your-domain.com/hitokoto?min_length=10&max_length=20
 
 # 官方格式：JSONP格式
-curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?encode=jsonp&callback=myCallback
+curl https://your-domain.com/hitokoto?encode=jsonp&callback=myCallback
 
 # 简化格式：获取动画类型
-curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?type=a
+curl https://your-domain.com/hitokoto?type=a
 
 # 简化格式：纯文本
-curl https://your-domain.pages.dev/api/hitokoto/hitokoto.html?format=text
+curl https://your-domain.com/hitokoto?format=text
 ```
 
 ### 📦 返回数据
