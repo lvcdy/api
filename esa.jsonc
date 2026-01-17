@@ -1,18 +1,28 @@
 {
-  "name": "api",
-  "assets": {
-    "root": ".",
-    "include": ["**"],
-    "exclude": [
-      ".git",
-      ".github",
-      ".gitignore",
-      "wrangler.toml",
-      "esa.jsonc",
-      "package.json",
-      "build.json",
-      "node_modules",
-      ".DS_Store"
+    "name": "api",
+    "assets": {
+        "root": ".",
+        "include": [
+            "**"
+        ],
+        "exclude": [
+            ".git",
+            ".github",
+            ".gitignore",
+            "wrangler.toml",
+            "esa.jsonc",
+            "package.json",
+            "build.json",
+            "node_modules",
+            ".DS_Store"
+        ]
+    },
+    "routes": [
+        {
+            "pattern": "/hitokoto",
+            "method": [
+                "GET"
+            ]
+        }
     ]
-  }
 }
