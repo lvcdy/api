@@ -1,8 +1,5 @@
 {
-    "build": {
-        "command": "",
-        "cwd": "."
-    }
-}
-
+  "buildCommand": "",
+  "outputDirectory": ".",
+  "assetsDirectory": "."
 }

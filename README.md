@@ -153,8 +153,8 @@ wrangler pages deploy . --project-name=api
 ┌─ 阿里云 ESA (主部署)
 │  └─ esa.jsonc 配置
 │
-└─ Cloudflare Pages (备用)
-   └─ wrangler.toml / build.json 配置
+└─ 其他平台 (备用)
+   └─ 根据各平台要求配置
 ```
 
 **优势:**
