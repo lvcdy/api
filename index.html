@@ -35,7 +35,7 @@
             // 随机选择一个类型
             const selectedType = types[Math.floor(Math.random() * types.length)];
 
-            fetch(`../../sentences/${selectedType}.json`)
+            fetch(`./sentences/${selectedType}.json`)
                 .then(response => response.json())
                 .then(data => {
                     // 按长度范围过滤
