@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <script>
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const type = params.get('type') || 'random';
+            const format = params.get('format') || 'json';
+            const callback = params.get('callback') || 'hitokoto';
+
+            const types = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'];
+            let selectedType = type === 'random' ? types[Math.floor(Math.random() * types.length)] : type;
+
+            if (!types.includes(selectedType)) {
+                selectedType = types[Math.floor(Math.random() * types.length)];
+            }
+
+            fetch(`../../sentences/${selectedType}.json`)
+                .then(response => response.json())
+                .then(data => {
+                    const sentence = data[Math.floor(Math.random() * data.length)];
+
+                    if (format === 'text') {
+                        document.write(sentence.hitokoto);
+                    } else if (format === 'js' || format === 'jsonp') {
+                        document.write(callback + '(' + JSON.stringify(sentence) + ')');
+                    } else {
+                        document.write(JSON.stringify(sentence));
+                    }
+                })
+                .catch(error => {
+                    const errorResponse = {
+                        error: '加载失败',
+                        message: error.message
+                    };
+
+                    if (format === 'js' || format === 'jsonp') {
+                        document.write(callback + '(' + JSON.stringify(errorResponse) + ')');
+                    } else {
+                        document.write(JSON.stringify(errorResponse));
+                    }
+                });
+        })();
+    </script>
+</body>
+
+</html>
